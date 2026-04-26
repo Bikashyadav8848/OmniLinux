@@ -27,8 +27,17 @@ jobs:
       - name: Setup Config
         run: |
           sudo mkdir -p auto
-          echo '#!/bin/bash' | sudo tee auto/config
-          echo 'lb config noauto --mode debian --distribution jammy --binary-images iso --system live --source false' | sudo tee -a auto/config
+          cat > auto/config <<'CONF'
+#!/bin/bash
+lb config noauto \
+    --mode ubuntu \
+    --distribution jammy \
+    --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ \
+    --mirror-binary http://archive.ubuntu.com/ubuntu/ \
+    --binary-images iso \
+    --system live \
+    --source false
+CONF
           sudo chmod +x auto/config
 
       - name: Bootstrap
