@@ -26,42 +26,78 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 log_info "Installing dependencies..."
+export DEBIAN_FRONTEND=noninteractive
 apt-get update
-DEPS="live-build debootstrap squashfs-tools xorriso mtools git wget"
-apt-get install -y --no-install-recommends $DEPS
+apt-get install -y --no-install-recommends \
+    live-build \
+    debootstrap \
+    squashfs-tools \
+    xorriso \
+    mtools \
+    git \
+    wget \
+    gzip \
+    live-boot \
+    live-boot-initramfs-tools
 
 log_info "Cleaning previous build..."
 lb clean --all 2>/dev/null || true
 rm -f OmniLinux-*.iso 2>/dev/null || true
+rm -rfauto 2>/dev/null || true
+rm -rfchroot 2>/dev/null || true
 
 log_info "Configuring for $ARCH..."
-cat > auto/config <<'EOF'
+
+# Create auto/config properly
+mkdir -p auto
+cat > auto/config <<'CONFIGEOF'
 #!/bin/bash
 lb config noauto \
     --architectures amd64 \
     --mode debian \
     --distribution noble \
-    --mirror-bootstrap "http://us.archive.ubuntu.com/ubuntu/" \
-    --mirror-binary "http://us.archive.ubuntu.com/ubuntu/" \
+    --mirror-bootstrap "http://archive.ubuntu.com/ubuntu/" \
+    --mirror-binary "http://archive.ubuntu.com/ubuntu/" \
     --iso-application "OmniLinux" \
     --iso-publisher "OmniLinux Project" \
     --iso-volume "OmniLinux 1.0 LTS" \
-    --bootappend-live "boot=live components quiet splash" \
-    --linux-packages "linux-image-generic" \
+    --bootappend-live "boot=live config toram" \
+    --linux-packages "linux-image-generic-hwe-24.04" \
     --initramfs "initramfs-tools" \
     --system live \
     --source false \
     --binary-images iso-hybrid
-EOF
+CONFIGEOF
 chmod +x auto/config
 
+# Create auto/bootstrap
+cat > auto/bootstrap <<'BOOTEOF'
+#!/bin/bash
+lb bootstrap noauto "${@}"
+BOOTEOF
+chmod +x auto/bootstrap
+
+# Create auto/chroot  
+cat > auto/chroot <<'CHROOTEOF'
+#!/bin/bash
+lb chroot noauto "${@}"
+CHROOTEOF
+chmod +x auto/chroot
+
+# Create auto/binary
+cat > auto/binary <<'BINARYEOF'
+#!/bin/bash
+lb binary noauto "${@}"
+BINARYEOF
+chmod +x auto/binary
+
 log_info "[1/4] Bootstrapping base system..."
-log_warn "Downloading Ubuntu base (~300MB)..."
+log_warn "Downloading Ubuntu base (~400MB)..."
 lb bootstrap
 
 log_info "[2/4] Installing packages..."
 log_warn "This takes 15-30 minutes..."
-lb chroot
+lb chroot --verbose
 
 log_info "[3/4] Building ISO..."
 log_warn "Creating squashfs and ISO..."
