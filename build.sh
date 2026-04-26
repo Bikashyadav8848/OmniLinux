@@ -58,6 +58,7 @@ lb config noauto \
     --distribution noble \
     --mirror-bootstrap "http://archive.ubuntu.com/ubuntu/" \
     --mirror-binary "http://archive.ubuntu.com/ubuntu/" \
+    --archive-areas "main restricted universe multiverse" \
     --iso-application "OmniLinux" \
     --iso-publisher "OmniLinux Project" \
     --iso-volume "OmniLinux 1.0 LTS" \
@@ -70,30 +71,37 @@ lb config noauto \
 CONFIGEOF
 chmod +x auto/config
 
-# Create auto/bootstrap
+# Create auto/bootstrap - with debug
 cat > auto/bootstrap <<'BOOTEOF'
 #!/bin/bash
+set -x
 lb bootstrap noauto "${@}"
 BOOTEOF
 chmod +x auto/bootstrap
 
-# Create auto/chroot  
+# Create auto/chroot - with debug
 cat > auto/chroot <<'CHROOTEOF'
 #!/bin/bash
+set -x
 lb chroot noauto "${@}"
 CHROOTEOF
 chmod +x auto/chroot
 
-# Create auto/binary
+# Create auto/binary - with debug
 cat > auto/binary <<'BINARYEOF'
 #!/bin/bash
+set -x
 lb binary noauto "${@}"
 BINARYEOF
 chmod +x auto/binary
 
 log_info "[1/4] Bootstrapping base system..."
 log_warn "Downloading Ubuntu base (~400MB)..."
-lb bootstrap
+lb bootstrap --debug || {
+    log_err "Bootstrap failed, checking error..."
+    ls -la
+    cat config/bootstrap 2>/dev/null || true
+}
 
 log_info "[2/4] Installing packages..."
 log_warn "This takes 15-30 minutes..."
