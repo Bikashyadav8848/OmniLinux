@@ -1,0 +1,68 @@
+#!/bin/bash
+# OmniLinux Update Manager
+
+set -e
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Run as root"
+    exit 1
+fi
+
+DIALOG="whiptail"
+! command -v $DIALOG &> /dev/null && DIALOG="dialog"
+
+echo "======================================"
+echo "  OmniLinux Update Manager  "
+echo "======================================"
+echo ""
+
+# Update package lists
+echo "[*] Checking for updates..."
+apt-get update -qq
+
+# Count updates
+UPDATES=$(apt list --upgradable 2>/dev/null | wc -l)
+UPDATES=$((UPDATES - 1))
+
+echo "Updates available: $UPDATES"
+echo ""
+
+if [ "$UPDATES" -eq 0 ]; then
+    echo "System is up to date!"
+    exit 0
+fi
+
+# Show update dialog
+$DIALOG --title "Update System" --yesno \
+    "Update $UPDATES packages?" 10 50
+
+if [ $? -ne 0 ]; then
+    echo "Update cancelled."
+    exit 0
+fi
+
+# Show progress
+$DIALOG --title "Updating" --infobox \
+    "Installing updates...\nThis may take a few minutes." 10 50 &
+
+# Install updates
+apt-get upgrade -y
+
+# Install updates for snap
+if command -v snap &> /dev/null; then
+    snap refresh 2>/dev/null || true
+fi
+
+# Update flatpak
+if command -v flatpak &> /dev/null; then
+    flatpak update -y 2>/dev/null || true
+fi
+
+# Clean up
+apt-get autoremove -y
+apt-get autoclean
+
+echo ""
+echo "======================================"
+echo "  Update Complete!  "
+echo "======================================"

@@ -1,0 +1,25 @@
+# OmniLinux Git Ignore
+
+# Build artifacts
+*.iso
+*.iso.bak
+*.tmp/
+
+# live-build cache
+cache/
+*.bootstrap
+*.chroot
+
+# System
+*.log
+*.swp
+*~
+
+# Secrets
+.env
+*.key
+*.pem
+
+# OS generated
+.DS_Store
+Thumbs.db

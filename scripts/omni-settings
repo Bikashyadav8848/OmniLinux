@@ -1,0 +1,150 @@
+#!/bin/bash
+# OmniLinux Settings Panel
+# Central settings management
+
+set -e
+
+DIALOG="whiptail"
+! command -v $DIALOG &> /dev/null && DIALOG="dialog"
+
+if ! command -v $DIALOG &> /dev/null; then
+    echo "Please install: sudo apt install whiptail"
+    exit 1
+fi
+
+main_menu() {
+    CHOICE=$($DIALOG --title "OmniLinux Settings" --menu \
+        "Customize your OmniLinux:" 18 70 10 \
+        "1" "Display Settings (Resolution, Refresh Rate)" \
+        "2" "Power Management (Sleep, Hibernate)" \
+        "3" "Network Settings (WiFi, VPN, Proxy)" \
+        "4" "Sound Settings (Audio Output)" \
+        "5" "Touchpad & Mouse Settings" \
+        "6" "Keyboard Shortcuts" \
+        "7" "Firewall (UFW) Settings" \
+        "8" "Startup Applications" \
+        "9" "Desktop Environment Selector" \
+        "10" "Theme & Appearance" \
+        "11" "Swap Management" \
+        "12" "Language & Region" \
+        3>&1 1>&2 2>&3)
+    
+    case $CHOICE in
+        1) display_settings ;;
+        2) power_settings ;;
+        3) network_settings ;;
+        4) sound_settings ;;
+        5) input_settings ;;
+        6) shortcut_settings ;;
+        7) firewall_settings ;;
+        8) startup_settings ;;
+        9) desktop_selector ;;
+        10) theme_settings ;;
+        11) swap_settings ;;
+        12) language_settings ;;
+        *) exit 0 ;;
+    esac
+}
+
+display_settings() {
+    OPTIONS=$($DIALOG --title "Display Settings" --menu \
+        "Choose:" 12 50 4 \
+        "1" "Change Resolution" \
+        "2" "Set Refresh Rate" \
+        "3" "Enable Night Light" \
+        "4" "Scale Text & Apps" 3>&1 1>&2 2>&3)
+    
+    if [ "$OPTIONS" = "1" ]; then
+        RES=$($DIALOG --title "Resolution" --menu \
+            "Select:" 12 50 6 \
+            "1920x1080" "Full HD" \
+            "2560x1440" "2K" \
+            "3840x2160" "4K" 3>&1 1>&2 2>&3)
+        xrandr -s $RES 2>/dev/null || echo "Change via Display Settings app"
+    fi
+    
+    main_menu
+}
+
+power_settings() {
+    $DIALOG --title "Power" --yesno "Enable power saving mode?" 10 50
+    main_menu
+}
+
+network_settings() {
+    $DIALOG --title "Network" --msgbox "Open Settings > Network" 10 50
+    main_menu
+}
+
+sound_settings() {
+    $DIALOG --title "Sound" --msgbox "Open Sound Settings app" 10 50
+    main_menu
+}
+
+input_settings() {
+    $DIALOG --title "Input" --msgbox "Open Mouse & Touchpad Settings" 10 50
+    main_menu
+}
+
+shortcut_settings() {
+    $DIALOG --title "Shortcuts" --msgbox "Open Keyboard Shortcuts in DE settings" 10 50
+    main_menu
+}
+
+firewall_settings() {
+    ENABLE=$($DIALOG --title "Firewall" --menu \
+        "UFW Status:" 12 50 4 \
+        "1" "Enable Firewall" \
+        "2" "Disable Firewall" \
+        "3" "Show Status" \
+        "4" "View Rules" 3>&1 1>&2 2>&3)
+    
+    case $ENABLE in
+        1) ufw enable; $DIALOG --msgbox "Firewall enabled" 10 50 ;;
+        2) ufw disable; $DIALOG --msgbox "Firewall disabled" 10 50 ;;
+        3) ufw status | $DIALOG --title "Status" --textbox /dev/stdin 15 60 ;;
+        4) ufw status numbered | $DIALOG --title "Rules" --textbox /dev/stdin 20 70 ;;
+    esac
+    main_menu
+}
+
+startup_settings() {
+    $DIALOG --title "Startup" --msgbox "Open Startup Applications in DE settings" 10 50
+    main_menu
+}
+
+desktop_selector() {
+    DE=$($DIALOG --title "Desktop Selection" --menu \
+        "Select Default DE:" 14 60 6 \
+        "1" "GNOME (Default)" \
+        "2" "KDE Plasma" \
+        "3" "XFCE" \
+        "4" "Cinnamon" \
+        "5" "MATE" 3>&1 1>&2 2>&3)
+    
+    $DIALOG --title "Desktop" --yesno "Switch to selected desktop on next login?" 10 50
+    main_menu
+}
+
+theme_settings() {
+    THEME=$($DIALOG --title "Theme" --menu \
+        "Select:" 12 50 4 \
+        "1" "Light Theme" \
+        "2" "Dark Theme" \
+        "3" "System Default" \
+        "4" "Custom Colors" 3>&1 1>&2 2>&3)
+    main_menu
+}
+
+swap_settings() {
+    SIZE=$($DIALOG --title "Swap Size" --inputbox \
+        "Enter swap size in GB:" 10 50 "4" 3>&1 1>&2 2>&3)
+    main_menu
+}
+
+language_settings() {
+    $DIALOG --title "Language" --msgbox "Open Language Settings in DE" 10 50
+    main_menu
+}
+
+main_menu

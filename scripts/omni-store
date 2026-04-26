@@ -1,0 +1,190 @@
+#!/bin/bash
+# OmniLinux Open Store
+# GUI application store for browsing and installing open source apps
+
+export QT_QPA_PLATFORM=gtk3
+export QT_STYLE_OVERRIDE=gtk3
+
+DIALOG="whiptail"
+if ! command -v whiptail &> /dev/null; then
+    DIALOG="dialog"
+fi
+
+if ! command -v $DIALOG &> /dev/null; then
+    echo "Please install dialog or whiptail: sudo apt install dialog"
+    exit 1
+fi
+
+APP_DIR="/usr/share/omni-store"
+CACHE_DIR="$HOME/.cache/omni-store"
+mkdir -p "$CACHE_DIR"
+
+# App categories and their installation commands
+declare -A APPS
+
+init_apps() {
+    # Productivity
+    APPS["LibreOffice Writer"]="apt install -y libreoffice-writer"
+    APPS["LibreOffice Calc"]="apt install -y libreoffice-calc"
+    APPS["LibreOffice Impress"]="apt install -y libreoffice-impress"
+    APPS["GIMP Image Editor"]="apt install -y gimp"
+    APPS["Inkscape Vector Graphics"]="apt install -y inkscape"
+    APPS["KDenLive Video Editor"]="apt install -y kdenlive"
+    APPS["Blender 3D"]="apt install -y blender"
+    APPS["Audacity Audio Editor"]="apt install -y audacity"
+    
+    # Development
+    APPS["VS Code"]="flatpak install -y flathub com.microsoft.VSCode"
+    APPS["IntelliJ IDEA"]="flatpak install -y flathub org.jetbrains.IntelliJ-IDEA-Community"
+    APPS["Atom Editor"]="flatpak install -y flathub com.github.atomantanuki.Atom"
+    APPS["Sublime Text"]="apt install -y sublime-text"
+    APPS["GitKraken"]="apt install -y gitkraken"
+    
+    # Multimedia
+    APPS["VLC Media Player"]="apt install -y vlc"
+    APPS["OBS Studio"]="apt install -y obs-studio"
+    APPS["HandBrake"]="apt install -y handbrake"
+    APPS["ffmpeg"]="apt install -y ffmpeg"
+    
+    # Communication
+    APPS["Discord"]="flatpak install -y flathub com.discordapp.Discord"
+    APPS["Slack"]="flatpak install -y flathub com.slack.Slack"
+    APPS["Telegram Desktop"]="apt install -y telegram-desktop"
+    APPS["Thunderbird Mail"]="apt install -y thunderbird"
+    
+    # Utilities
+    APPS["Obsidian Notes"]="flatpak install -y flathub md.obsidian.Obsidian"
+    APPS["FileZilla FTP"]="apt install -y filezilla"
+    APPS["7-Zip"]="apt install -y p7zip-full"
+    APPS["GParted"]="apt install -y gparted"
+    APPS["Stacer"]="apt install -y stacer"
+    APPS["BleachBit"]="apt install -y bleachbit"
+    
+    # Security
+    APPS["Wireshark"]="apt install -y wireshark"
+    APPS["KeePassXC"]="apt install -y keepassxc"
+    APPS["ClamAV"]="apt install -y clamav"
+    
+    # Gaming
+    APPS["Steam"]="apt install -y steam"
+    APPS["Lutris"]="apt install -y lutris"
+    APPS["MangoHUD"]="apt install -y mangohud"
+    APPS["GameMode"]="apt install -y gamemode"
+    
+    # Internet
+    APPS["Firefox ESR"]="apt install -y firefox-esr"
+    APPS["Chromium Browser"]="apt install -y chromium-browser"
+    APPS["Transmission"]="apt install -y transmission"
+}
+
+show_category() {
+    init_apps
+    
+    CHOICE=$($DIALOG --title "OmniLinux Open Store" --menu \
+        "Select a category:" 15 60 6 \
+        "1" "All Applications" \
+        "2" "Productivity" \
+        "3" "Development" \
+        "4" "Multimedia" \
+        "5" "Communication" \
+        "6" "Utilities" \
+        "7" "Security" \
+        "8" "Gaming" \
+        "9" "Internet" \
+        3>&1 1>&2 2>&3)
+    
+    case $CHOICE in
+        1) show_all_apps ;;
+        2) show_apps_by_category "Productivity" ;;
+        3) show_apps_by_category "Development" ;;
+        4) show_apps_by_category "Multimedia" ;;
+        5) show_apps_by_category "Communication" ;;
+        6) show_apps_by_category "Utilities" ;;
+        7) show_apps_by_category "Security" ;;
+        8) show_apps_by_category "Gaming" ;;
+        9) show_apps_by_category "Internet" ;;
+        *) exit 0 ;;
+    esac
+}
+
+show_all_apps() {
+    local options=()
+    local i=1
+    for app in "${!APPS[@]}"; do
+        options+=("$i" "$app")
+        ((i++))
+    done
+    
+    CHOICE=$($DIALOG --title "OmniLinux Open Store - All Apps" --menu \
+        "Select an app to install:" 20 70 10 "${options[@]}" 3>&1 1>&2 2>&3)
+    
+    if [ -n "$CHOICE" ]; then
+        local app_name="${options[(($CHOICE * 2)) - 1]}"
+        install_app "$app_name"
+    else
+        show_category
+    fi
+}
+
+show_apps_by_category() {
+    local cat="$1"
+    local options=()
+    local i=1
+    
+    for app in "${!APPS[@]}"; do
+        if [[ "$app" == *"$cat"* ]]; then
+            options+=("$i" "$app")
+            ((i++))
+        fi
+    done
+    
+    if [ ${#options[@]} -eq 0 ]; then
+        $DIALOG --msgbox "No apps found in this category." 10 50
+        show_category
+        return
+    fi
+    
+    CHOICE=$($DIALOG --title "OmniLinux Open Store - $cat" --menu \
+        "Select an app to install:" 15 60 8 "${options[@]}" 3>&1 1>&2 2>&3)
+    
+    if [ -n "$CHOICE" ]; then
+        local app_name="${options[(($CHOICE * 2)) - 1]}"
+        install_app "$app_name"
+    else
+        show_category
+    fi
+}
+
+install_app() {
+    local app="$1"
+    local cmd="${APPS[$app]}"
+    
+    if [ -z "$cmd" ]; then
+        $DIALOG --msgbox "App not found." 10 50
+        return
+    fi
+    
+    $DIALOG --title "Installing $app" --yesno \
+        "Install $app?\n\nCommand: $cmd" 12 60
+    
+    if [ $? -eq 0 ]; then
+        $DIALOG --infobox "Installing $app... Please wait." 10 50
+        eval "$cmd" 2>&1 | tee "$CACHE_DIR/install.log"
+        
+        if [ $? -eq 0 ]; then
+            $DIALOG --msgbox "$app installed successfully!" 10 50
+        else
+            $DIALOG --msgbox "Installation failed. Check log: $CACHE_DIR/install.log" 12 60
+        fi
+    fi
+    
+    show_category
+}
+
+main() {
+    while true; do
+        show_category
+    done
+}
+
+main "$@"

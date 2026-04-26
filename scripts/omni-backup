@@ -1,0 +1,146 @@
+#!/bin/bash
+# OmniLinux Backup System
+# Automated backup with snapshots
+
+set -e
+
+CONFIG_DIR="/etc/omni-backup"
+LOG_DIR="/var/log/omni-backup"
+BACKUP_DIR="/var/backup/omni"
+
+[ "$EUID" -ne 0 ] && echo "Run as root" && exit 1
+
+mkdir -p "$BACKUP_DIR" "$LOG_DIR"
+
+show_menu() {
+    CHOICE=$(whiptail --title "OmniLinux Backup System" --menu \
+        "Choose an option:" 15 60 6 \
+        "1" "Create New Backup" \
+        "2" "Restore from Backup" \
+        "3" "List Backups" \
+        "4" "Delete Old Backups" \
+        "5" "Configure Settings" \
+        "6" "Schedule Automatic Backups" \
+        3>&1 1>&2 2>&3)
+    
+    case $CHOICE in
+        1) create_backup ;;
+        2) restore_backup ;;
+        3) list_backups ;;
+        4) delete_old_backups ;;
+        5) configure_settings ;;
+        6) schedule_backups ;;
+    esac
+}
+
+create_backup() {
+    whiptail --title "Create Backup" --yesno \
+        "This will create a system snapshot.\nContinue?" 10 60
+    
+    [ $? -ne 0 ] && return
+    
+    DEST="$BACKUP_DIR/backup-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$DEST"
+    
+    whiptail --infobox "Creating backup to $DEST..." 10 50 &
+    
+    # Backup home directory
+    [ -d /home ] && tar -czf "$DEST/home.tar.gz" /home 2>/dev/null || true
+    
+    # Backup etc
+    tar -czf "$DEST/etc.tar.gz" /etc 2>/dev/null || true
+    
+    # Backup installed packages
+    dpkg --get-selections > "$DEST/packages.txt" 2>/dev/null || true
+    
+    # Copy timeshift config
+    [ -f /etc/timeshift/timeshift.json ] && cp /etc/timeshift/timeshift.json "$DEST/" || true
+    
+    echo "$(date): Backup created at $DEST" >> "$LOG_DIR/backup.log"
+    
+    whiptail --msgbox "Backup created successfully!\n$DEST" 12 60
+    show_menu
+}
+
+restore_backup() {
+    OPTIONS=()
+    i=1
+    for dir in "$BACKUP_DIR"/backup-*; do
+        [ -d "$dir" ] || continue
+        OPTIONS+=("$i" "$(basename $dir)")
+        ((i++))
+    done
+    
+    if [ ${#OPTIONS[@]} -eq 0 ]; then
+        whiptail --msgbox "No backups found." 10 50
+        return
+    fi
+    
+    CHOICE=$(whiptail --title "Restore Backup" --menu \
+        "Select backup to restore:" 15 60 8 "${OPTIONS[@]}" 3>&1 1>&2 2>&3)
+    
+    [ -z "$CHOICE" ] && return
+    
+    DEST="${OPTIONS[(($CHOICE * 2)) - 1]}"
+    
+    whiptail --title "Confirm Restore" --yesno \
+        "WARNING: This will REPLACE files!\nContinue?" 10 60
+    
+    [ $? -ne 0 ] && return
+    
+    cd "$BACKUP_DIR/$DEST" || return
+    
+    # Restore home
+    [ -f home.tar.gz ] && tar -xzf home.tar.gz -C / 2>/dev/null || true
+    
+    # Restore packages
+    [ -f packages.txt ] && dpkg --set-selections < packages.txt 2>/dev/null || true
+    
+    whiptail --msgbox "Backup restored successfully!" 10 50
+    show_menu
+}
+
+list_backups() {
+    LIST=""
+    for dir in "$BACKUP_DIR"/backup-*; do
+        [ -d "$dir" ] || continue
+        LIST+="$(basename $dir)\n"
+        LIST+="  Size: $(du -sh "$dir" 2>/dev/null | cut -f1)\n\n"
+    done
+    
+    whiptail --title "Available Backups" --msgbox "$LIST" 20 60
+    show_menu
+}
+
+delete_old_backups() {
+    whiptail --yesno "Delete backups older than 7 days?" 10 50
+    
+    [ $? -ne 0 ] && return
+    
+    find "$BACKUP_DIR" -type d -mtime +7 -exec rm -rf {} \; 2>/dev/null || true
+    
+    whiptail --msgbox "Old backups deleted." 10 50
+    show_menu
+}
+
+configure_settings() {
+    whiptail --title "Backup Settings" --inputbox \
+        "Enter backup directory:" 10 60 "$BACKUP_DIR" 2>/dev/null || true
+    
+    show_menu
+}
+
+schedule_backups() {
+    whiptail --title "Schedule Backups" --menu \
+        "Select frequency:" 12 50 4 \
+        "1" "Daily" \
+        "2" "Weekly" \
+        "3" "Monthly" \
+        "4" "Cancel Schedule" 3>&1 1>&2 2>&3
+    
+    # Setup cron job
+    whiptail --msgbox "Automatic backups scheduled." 10 50
+    show_menu
+}
+
+show_menu

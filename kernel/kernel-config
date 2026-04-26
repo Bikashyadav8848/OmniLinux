@@ -1,0 +1,12 @@
+# kernel-config
+# This file serves as a reference for building a custom Zen/Liquorix style kernel.
+# In an actual live-build, you'd usually supply the pre-compiled deb package 
+# of the kernel or use a PPA. If building locally, you append this to .config.
+
+CONFIG_HZ_1000=y              # 1000Hz timer for low latency
+CONFIG_PREEMPT_DYNAMIC=y      # Dynamic preemption
+CONFIG_NO_HZ_FULL=y           # Tickless for better perf
+CONFIG_BFQ_GROUP_IOSCHED=y    # BFQ I/O scheduler
+CONFIG_TCP_CONG_BBR=y         # BBR congestion control
+CONFIG_ZSTD_COMPRESS=y        # Fast compression
+CONFIG_DEFAULT_MMAP_MIN_ADDR=65536

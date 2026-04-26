@@ -1,0 +1,56 @@
+#!/bin/bash
+# OmniLinux Docker Manager
+# Easy Docker and Container management
+
+set -e
+
+if ! command -v docker &> /dev/null; then
+    echo "Docker not installed. Install with: sudo apt install docker.io"
+    exit 1
+fi
+
+DIALOG="whiptail"
+! command -v $DIALOG &> /dev/null && DIALOG="dialog"
+
+main_menu() {
+    CHOICE=$($DIALOG --title "OmniLinux Docker Manager" --menu \
+        "Choose option:" 15 60 6 \
+        "1" "Start Docker" \
+        "2" "Stop Docker" \
+        "3" "Restart Docker" \
+        "4" "List Containers" \
+        "5" "List Images" \
+        "6" "Pull Image" \
+        "7" "Remove Dangling Images" \
+        "8" "Clean Up Docker" \
+        3>&1 1>&2 2>&3)
+    
+    case $CHOICE in
+        1) docker start ;;
+        2) docker stop ;;
+        3) docker restart ;;
+        4) docker ps -a ;;
+        5) docker images ;;
+        6) pull_image ;;
+        7) docker image prune -f ;;
+        8) docker system prune -a -f ;;
+    esac
+    
+    main_menu
+}
+
+docker() {
+    systemctl $1 docker 2>/dev/null || systemctl $1 docker.io 2>/dev/null || service docker $1
+}
+
+pull_image() {
+    IMAGE=$($DIALOG --title "Pull Image" --inputbox \
+        "Enter image name (e.g., nginx, ubuntu):" 10 50 "nginx" 3>&1 1>&2 2>&3)
+    
+    [ -z "$IMAGE" ] && return
+    
+    docker pull $IMAGE
+    main_menu
+}
+
+main_menu

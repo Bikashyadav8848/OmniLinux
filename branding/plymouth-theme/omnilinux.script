@@ -1,0 +1,28 @@
+# OmniLinux Plymouth Boot Animation Script
+
+# Theme colors
+primary_color = RGB(0.239, 0.494, 1.0);    # OmniBlue #3D7EFF
+secondary_color = RGB(0.486, 0.227, 0.929); # OmniPurple #7C3AED
+background_color = RGB(0.043, 0.067, 0.090); # OmniDark #0D1117
+
+# Background
+Window.SetBackgroundSprite (Image.Background);
+
+# Logo sprite
+logo = ImageSprite.New (Image.logo);
+logo.SetScale (0.5, 0.5);
+logo.SetPosition (Screen.GetWidth() / 2 - 100, Screen.GetHeight() / 2 - 100);
+
+# Progress bar
+progress_box = Sprite (Image.progress_box);
+progress_box.SetPosition (Screen.GetWidth() / 2 - 150, Screen.GetHeight() * 0.7);
+
+# Helper function for progress animation
+fun countdown_callback (duration)
+{
+    # Progress calculation would happen here
+    # Plymouth handles animation automatically
+}
+
+# Progress total: estimated boot time in ms
+Plymouth.SetBootProgressFunction(countdown_callback);

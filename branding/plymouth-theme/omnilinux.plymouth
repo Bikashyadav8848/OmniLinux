@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=OmniLinux
+Description=OmniLinux Boot Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/omnilinux
+ScriptFile=/usr/share/plymouth/omnilinux/omnilinux.script

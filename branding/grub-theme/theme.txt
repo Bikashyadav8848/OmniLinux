@@ -1,0 +1,50 @@
+# GRUB Theme Configuration for OmniLinux
+
+title-text: "OmniLinux 1.0 LTS"
+title-font: "Sans Serif 16"
+message-font: "Sans Serif 14"
+
+# Boot menu colors
++ theme {
+  boot_menu {
+    item_color = "#3D7EFF"
+    item_icon_color = "#ffffff"
+    selected_item_color = "#7C3AED"
+    selected_item_icon_color = "#ffffff"
+  }
+}
+
+# Desktop background
++ image {
+  file = "background.png"
+  scale = false
+}
+
+# Left panel
++ vbox {
+  left = 15%
+  top = 150
+  width = 30
+  + image {
+    file = "omnilinux-white.png"
+    width = 150
+    height = 150
+  }
+}
+
+# Bottom status bar
++ vbox {
+  top = 90%
+  left = 15%
+  width = 70%
+  + hbox {
+    + image { file = "terminal.png" }
+    text = "${grub_platform}"
+    right = 50%
+  }
+  + hbox {
+    + image { file = "display.png" }
+    text = "${selected_entry}"
+    right = 0
+  }
+}

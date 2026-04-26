@@ -1,0 +1,74 @@
+#!/bin/bash
+# OmniLinux System Diagnostic Tool
+
+clear
+
+echo "======================================"
+echo "  OmniLinux System Diagnostic  "
+echo "======================================"
+echo ""
+
+# System Info
+echo "=== SYSTEM INFO ==="
+echo "Hostname: $(hostname)"
+echo "Kernel: $(uname -r)"
+echo "OS: $(cat /etc/os-release | grep PRETTY_NAME | cut -d'"' -f2)"
+echo "Uptime: $(uptime -p)"
+echo ""
+
+# Hardware
+echo "=== HARDWARE ==="
+echo "CPU: $(cat /proc/cpuinfo | grep 'model name' | head -1 | cut -d: -f2)"
+echo "RAM: $(free -h | grep Mem | awk '{print $2}')"
+echo "Swap: $(free -h | grep Swap | awk '{print $2}')"
+echo "Disk: $(lsblk -o NAME,SIZE,TYPE | grep disk)"
+echo ""
+
+# Storage
+echo "=== STORAGE ==="
+df -h | grep -E '^/dev/'
+echo ""
+
+# Network
+echo "=== NETWORK ==="
+echo "IP Address: $(hostname -I | awk '{print $1}')"
+echo "DNS: $(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')"
+echo ""
+
+# Services Status
+echo "=== SERVICES ==="
+for svc in ssh ufw docker snapd; do
+    if systemctl is-active --quiet $svc 2>/dev/null; then
+        echo "$svc: RUNNING"
+    else
+        echo "$svc: STOPPED"
+    fi
+done
+echo ""
+
+# Package Updates
+echo "=== UPDATES ==="
+echo "Packages needing update: $(apt list --upgradable 2>/dev/null | wc -l)"
+echo ""
+
+# Graphics
+echo "=== GRAPHICS ==="
+lspci | grep -i vga || echo "No dedicated GPU found"
+glxinfo 2>/dev/null | grep "OpenGL renderer" || echo "OpenGL info not available"
+echo ""
+
+# Health Check
+echo "=== HEALTH ==="
+LOAD=$(uptime | cut -d':' -f4 | cut -d',' -f1)
+echo "Load Average: $LOAD"
+
+MEM_PCT=$(free | grep Mem | awk '{printf "%.0f", $3/$2 * 100}')
+echo "Memory Usage: $MEM_PCT%"
+
+DISK_PCT=$(df -h / | tail -1 | awk '{print $5}' | tr -d '%')
+echo "Disk Usage: $DISK_PCT%"
+
+echo ""
+echo "======================================"
+echo "  Diagnostic Complete  "
+echo "======================================"

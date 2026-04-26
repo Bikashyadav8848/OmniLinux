@@ -1,0 +1,62 @@
+#!/bin/bash
+# OmniLinux System Cleaner
+# Clean system garbage and free up space
+
+set -e
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Run as root"
+    exit 1
+fi
+
+echo "======================================"
+echo "  OmniLinux System Cleaner  "
+echo "======================================"
+echo ""
+
+# Clean apt cache
+echo "[*] Cleaning apt cache..."
+apt-get clean
+
+# Remove old kernels
+echo "[*] Removing old kernels..."
+dpkg -l 'linux-*' 2>/dev/null | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs apt-get -y purge 2>/dev/null || true
+
+# Clean thumbnail cache
+echo "[*] Cleaning thumbnail cache..."
+rm -rf ~/.cache/thumbnails/* 2>/dev/null || true
+
+# Clean system cache
+echo "[*] Cleaning system cache..."
+sync && echo 3 > /proc/sys/vm/drop_caches 2>/dev/null || true
+
+# Remove orphan packages
+echo "[*] Removing orphan packages..."
+apt-get autoremove -y 2>/dev/null || true
+
+# Clean log files (keep last 10MB)
+echo "[*] Truncating log files..."
+for log in /var/log/*.log; do
+    [ -f "$log" ] && tail -n 1000 "$log" > "$log.tmp" && mv "$log.tmp" "$log" 2>/dev/null || true
+done
+
+# Clean tmp
+echo "[*] Cleaning temporary files..."
+find /tmp -type f -atime +7 -delete 2>/dev/null || true
+find /var/tmp -type f -atime +7 -delete 2>/dev/null || true
+
+# Clean Snap
+echo "[*] Cleaning snap cache..."
+rm -rf /var/lib/snapd/cache/* 2>/dev/null || true
+
+# Flatpak cleanup
+echo "[*] Cleaning flatpak..."
+flatpak remove --unused 2>/dev/null || true
+
+echo ""
+echo "======================================"
+echo "  System cleaned!  "
+echo "======================================"
+
+echo ""
+df -h /
