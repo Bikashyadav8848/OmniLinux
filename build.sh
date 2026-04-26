@@ -1,12 +1,11 @@
 #!/bin/bash
-# OmniLinux Universal Build Script
 
 set -e
 
-RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m'
 
 log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
@@ -18,7 +17,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 ARCH="${1:-amd64}"
-VARIANT="${2:-desktop}"
 
 log_info "Building OmniLinux for: $ARCH"
 
@@ -29,7 +27,7 @@ fi
 
 log_info "Installing dependencies..."
 apt-get update
-DEPS="live-build debootstrap squashfs-tools xorriso mtools git curl wget"
+DEPS="live-build debootstrap squashfs-tools xorriso mtools git wget"
 apt-get install -y --no-install-recommends $DEPS
 
 log_info "Cleaning previous build..."
@@ -40,7 +38,7 @@ log_info "Configuring for $ARCH..."
 cat > auto/config <<'EOF'
 #!/bin/bash
 lb config noauto \
-    --architectures $ARCH \
+    --architectures amd64 \
     --mode debian \
     --distribution noble \
     --archive-areas "main restricted universe multiverse" \
@@ -52,12 +50,9 @@ lb config noauto \
     --bootappend-live "boot=live components quiet splash" \
     --linux-packages "linux-image-generic" \
     --initramfs "initramfs-tools" \
-    --security true \
-    --updates true \
     --system live \
     --source false \
-    --binary-images iso-hybrid \
-    --uefi true
+    --binary-images iso-hybrid
 EOF
 chmod +x auto/config
 
