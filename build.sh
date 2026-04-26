@@ -41,9 +41,8 @@ lb config noauto \
     --architectures amd64 \
     --mode debian \
     --distribution noble \
-    --archive-areas "main restricted universe multiverse" \
-    --mirror-bootstrap "http://archive.ubuntu.com/ubuntu/" \
-    --mirror-binary "http://archive.ubuntu.com/ubuntu/" \
+    --mirror-bootstrap "http://us.archive.ubuntu.com/ubuntu/" \
+    --mirror-binary "http://us.archive.ubuntu.com/ubuntu/" \
     --iso-application "OmniLinux" \
     --iso-publisher "OmniLinux Project" \
     --iso-volume "OmniLinux 1.0 LTS" \
