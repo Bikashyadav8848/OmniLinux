@@ -16,7 +16,7 @@ jobs:
 
       - name: Download Ubuntu Base ISO
         run: |
-          wget -O ubuntu-base.iso https://releases.ubuntu.com/22.04/ubuntu-22.04.3-desktop-amd64.iso
+          wget -O ubuntu-base.iso https://old-releases.ubuntu.com/releases/22.04.3/ubuntu-22.04.3-desktop-amd64.iso
           ls -lh ubuntu-base.iso
 
       - name: Upload ISO
