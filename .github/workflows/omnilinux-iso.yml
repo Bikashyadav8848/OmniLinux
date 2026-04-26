@@ -9,19 +9,40 @@ on:
 jobs:
   iso:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Ubuntu Base ISO
+      - name: Install Deps
         run: |
-          wget -O ubuntu-base.iso https://old-releases.ubuntu.com/releases/22.04.3/ubuntu-22.04.3-desktop-amd64.iso
-          ls -lh ubuntu-base.iso
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends live-build
 
-      - name: Upload ISO
+      - name: Cleanup
+        run: |
+          sudo rm -rf auto chroot .stage live-image-*.iso
+
+      - name: Setup Config
+        run: |
+          sudo mkdir -p auto
+          echo '#!/bin/bash' | sudo tee auto/config
+          echo 'lb config noauto --mode debian --distribution jammy --binary-images iso --system live --source false' | sudo tee -a auto/config
+          sudo chmod +x auto/config
+
+      - name: Bootstrap
+        run: sudo lb bootstrap
+        timeout-minutes: 10
+
+      - name: Build
+        run: sudo lb build
+        timeout-minutes: 10
+
+      - name: Upload
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Ubuntu-24.04-desktop-amd64
-          path: ubuntu-*.iso
-          if-no-files-found: error
+          name: OmniLinux-minimal
+          path: live-image-*.iso
+          if-no-files-found: ignore
