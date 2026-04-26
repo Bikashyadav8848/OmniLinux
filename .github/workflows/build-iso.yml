@@ -29,7 +29,7 @@ jobs:
         working-directory: /home/runner/work/OmniLinux/OmniLinux
         run: |
           sudo rm -rf auto chroot .stage 
-          sudo lbconfig --help 2>&1 | head -50
+          sudo lb config --help 2>&1 | head -50
           
   build:
     runs-on: ubuntu-latest
