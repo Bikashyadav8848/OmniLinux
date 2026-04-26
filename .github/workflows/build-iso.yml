@@ -2,6 +2,8 @@ name: Build OmniLinux ISO
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   debug:
