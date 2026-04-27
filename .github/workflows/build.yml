@@ -8,7 +8,11 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y live-build debootstrap squashfs-tools xorriso
       - run: sudo rm -rf auto chroot live-image-*.iso
       - run: sudo mkdir -p auto config/package-lists
-      - run: echo "live-boot ufw zsh" | sudo tee config/package-lists/common.list.chroot
+      - run: |
+          echo "ubuntu-minimal zsh sudo vim curl wget" | sudo tee config/package-lists/base.list.chroot
+          echo "ubuntu-desktop xorg gnome-shell gnome-terminal firefox" | sudo tee config/package-lists/gnome.list.chroot
+          echo "kde-plasma-desktop plasma-workspace sddm dolphin konsole" | sudo tee config/package-lists/kde.list.chroot
+          echo "xfce4 xfce4-goodies xfce4-terminal thunar" | sudo tee config/package-lists/xfce.list.chroot
       - run: |
           sudo lb config \
             --mode ubuntu \
@@ -16,7 +20,8 @@ jobs:
             --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ \
             --mirror-binary http://archive.ubuntu.com/ubuntu/ \
             --binary-images iso-hybrid \
-            --system live
+            --system live \
+            --source false
       - run: sudo lb bootstrap
       - run: sudo lb chroot
       - run: sudo lb build
