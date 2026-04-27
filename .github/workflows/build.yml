@@ -6,13 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y live-build debootstrap squashfs-tools xorriso
-      - run: sudo rm -rf auto chroot live-image-*.iso
-      - run: sudo mkdir -p auto config/package-lists
-      - run: |
-          echo "ubuntu-minimal zsh sudo vim curl wget" | sudo tee config/package-lists/base.list.chroot
-          echo "ubuntu-desktop xorg gnome-shell gnome-terminal firefox" | sudo tee config/package-lists/gnome.list.chroot
-          echo "kde-plasma-desktop plasma-workspace sddm dolphin konsole" | sudo tee config/package-lists/kde.list.chroot
-          echo "xfce4 xfce4-goodies xfce4-terminal thunar" | sudo tee config/package-lists/xfce.list.chroot
+      - run: sudo rm -rf auto chroot live-image-*.iso config
       - run: |
           sudo lb config \
             --mode ubuntu \
@@ -21,7 +15,8 @@ jobs:
             --mirror-binary http://archive.ubuntu.com/ubuntu/ \
             --binary-images iso-hybrid \
             --system live \
-            --source false
+            --source false \
+            --tasks "minimal"
       - run: sudo lb bootstrap
       - run: sudo lb chroot
       - run: sudo lb build
