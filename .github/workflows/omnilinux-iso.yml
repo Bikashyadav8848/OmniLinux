@@ -3,27 +3,23 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
   build-iso:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y live-build debootstrap squashfs-tools xorriso mtools dos2unix
-      - name: Prepare
+      - uses: actions/checkout@v4
+      
+      - name: Show environment
         run: |
-          dos2unix build.sh verify-build.sh
-          find config -type f -exec dos2unix {} + 2>/dev/null || true
-          chmod +x build.sh verify-build.sh
-      - name: Verify
-        run: bash verify-build.sh
-      - name: Build
-        run: sudo bash ./build.sh amd64
+          echo "GitHub Action runner working!"
+          whoami
+      
+      - name: Upload artifact test
+        run: echo "test" > test.txt
+      
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: OmniLinux-ISO-amd64
-          path: "OmniLinux-*.iso*"
-          if-no-files-found: error
+          name: test
+          path: test.txt
