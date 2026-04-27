@@ -1,0 +1,19 @@
+name: iso
+on: push
+permissions: {}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y live-build
+      - run: sudo rm -rf auto chroot
+      - run: sudo mkdir -p auto && echo 'lb config' | sudo tee auto/config
+      - run: sudo lb bootstrap
+      - run: sudo lb build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OmniLinux-minimal
+          path: live-image-*.iso
+          if-no-files-found: ignore
