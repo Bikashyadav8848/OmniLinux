@@ -3,30 +3,23 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
-  repository_dispatch:
-    types: [omnilinux-build]
 
 jobs:
   iso:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
     
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Deps
         run: |
-          export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends live-build
-
-      - name: Cleanup
-        run: |
-          sudo rm -rf auto chroot .stage live-image-*.iso
+          sudo apt-get install -y git live-build
 
       - name: Setup Config
         run: |
-          sudo mkdir -p auto
+          sudo mkdir -p auto config
           cat > auto/config <<'CONF'
 #!/bin/bash
 lb config noauto \
@@ -34,24 +27,23 @@ lb config noauto \
     --distribution jammy \
     --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ \
     --mirror-binary http://archive.ubuntu.com/ubuntu/ \
-    --binary-images iso \
+    --binary-images iso-hybrid \
     --system live \
     --source false
 CONF
           sudo chmod +x auto/config
 
-      - name: Bootstrap
-        run: sudo lb bootstrap
-        timeout-minutes: 10
-
       - name: Build
-        run: sudo lb build
-        timeout-minutes: 10
+        run: |
+          sudo lb bootstrap
+          sudo lb chroot
+          sudo lb binary
+        timeout-minutes: 30
 
       - name: Upload
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: OmniLinux-minimal
-          path: live-image-*.iso
+          name: OmniLinux-ISO
+          path: '*.iso'
           if-no-files-found: ignore
