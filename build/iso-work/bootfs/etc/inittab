@@ -1,9 +1,0 @@
-# /etc/inittab
-id:3:initdefault:
-si::sysinit:/etc/rc.multi
-1:2345:respawn:/sbin/getty 38400 tty1
-2:2345:respawn:/sbin/getty 38400 tty2
-3:2345:respawn:/sbin/getty 38400 tty3
-4:2345:respawn:/sbin/getty 38400 tty4
-5:2345:respawn:/sbin/getty 38400 tty5
-6:2345:respawn:/sbin/getty 38400 tty6

@@ -1,8 +1,0 @@
-╔══════════════════════════════════════════════════════╗
-║  ⚡ OmniLinux                                       ║
-║  The World's Most Powerful Linux OS                   ║
-║                                                     ║
-║  Version: 1.0-alpha                                 ║
-║  Edition: full                                       ║
-║  Codename: Genesis                                   ║
-╚══════════════════════════════════════════════════════╝

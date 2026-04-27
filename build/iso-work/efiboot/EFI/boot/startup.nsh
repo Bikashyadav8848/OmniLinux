@@ -1,3 +1,0 @@
-@echo -off
-echo OmniLinux 1.0-alpha booting...
- EFI\boot\bootx64.efi
