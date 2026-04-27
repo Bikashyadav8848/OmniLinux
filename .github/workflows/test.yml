@@ -9,13 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Create test file
-        run: |
-          mkdir -p output
-          echo "OmniLinux test build" > output/test.txt
-          ls -la output/
-      
+        run: mkdir -p output && echo "OmniLinux test build" > output/test.txt
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
