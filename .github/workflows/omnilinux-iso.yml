@@ -1,49 +1,23 @@
 name: OmniLinux ISO Build
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   iso:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Deps
+      
+      - name: Debug info
         run: |
-          sudo apt-get update
-          sudo apt-get install -y git live-build
-
-      - name: Setup Config
+          echo "Starting build..."
+          pwd
+          ls -la
+      
+      - name: Install tools
         run: |
-          sudo mkdir -p auto config
-          cat > auto/config <<'CONF'
-#!/bin/bash
-lb config noauto \
-    --mode ubuntu \
-    --distribution jammy \
-    --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ \
-    --mirror-binary http://archive.ubuntu.com/ubuntu/ \
-    --binary-images iso-hybrid \
-    --system live \
-    --source false
-CONF
-          sudo chmod +x auto/config
-
-      - name: Build
-        run: |
-          sudo lb bootstrap
-          sudo lb chroot
-          sudo lb binary
-        timeout-minutes: 30
-
-      - name: Upload
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: OmniLinux-ISO
-          path: '*.iso'
-          if-no-files-found: ignore
+          apt-get update
+          apt-get install -y live-build
