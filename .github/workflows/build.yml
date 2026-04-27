@@ -1,0 +1,33 @@
+name: Build ISO
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git live-build squashfs-tools xorriso
+      - name: Configure live-build
+        run: |
+          mkdir -p auto
+          cat > auto/config << 'EOF'
+#!/bin/bash
+lb config noauto \
+    --mode ubuntu \
+    --distribution jammy \
+    --architectures amd64 \
+    --binary-images iso-hybrid \
+    --system live \
+    --bootloader syslinux \
+    --iso-volume "OmniLinux"
+EOF
+          chmod +x auto/config
+      - name: Build
+        run: sudo lb build
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: OmniLinux-ISO
+          path: '*.iso'
