@@ -7,8 +7,16 @@ jobs:
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y live-build debootstrap squashfs-tools xorriso
       - run: sudo rm -rf auto chroot live-image-*.iso
-      - run: sudo mkdir -p auto
-      - run: sudo lb config --mode debian --distribution noble --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ --mirror-binary http://archive.ubuntu.com/ubuntu/ --binary-images iso-hybrid
+      - run: sudo mkdir -p auto config/package-lists
+      - run: echo "live-boot-system ufw zsh" | sudo tee config/package-lists/common.list.chroot
+      - run: |
+          sudo lb config \
+            --mode debian \
+            --distribution noble \
+            --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ \
+            --mirror-binary http://archive.ubuntu.com/ubuntu/ \
+            --binary-images iso-hybrid \
+            --system live
       - run: sudo lb bootstrap
       - run: sudo lb chroot
       - run: sudo lb build
