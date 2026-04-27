@@ -1,7 +1,0 @@
-name: iso
-on: push
-jobs:
-  x:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo ok
