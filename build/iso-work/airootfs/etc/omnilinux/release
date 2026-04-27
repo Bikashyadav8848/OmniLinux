@@ -1,0 +1,8 @@
+NAME="OmniLinux"
+VERSION="1.0-alpha"
+EDITION="full"
+BUILD_DATE="2026-04-26T19:07:58Z"
+ARCH="x86_64"
+CODENAME="Genesis"
+HOME_URL="https://omnilinux.org"
+BUG_REPORT_URL="https://github.com/omnilinux/omnilinux/issues"

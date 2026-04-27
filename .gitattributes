@@ -1,0 +1,11 @@
+# Force LF line endings for all shell scripts and configs
+*.sh text eol=lf
+*.chroot text eol=lf
+*.list.chroot text eol=lf
+auto/config text eol=lf
+auto/bootstrap text eol=lf
+auto/chroot text eol=lf
+auto/binary text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf

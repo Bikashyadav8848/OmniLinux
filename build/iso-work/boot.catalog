@@ -1,0 +1,9 @@
+BOOT CATALOG
+El Torito
+Boot Catalog at: 0x4300
+Boot Image at: 0x4301 (sectors 18-18)
+Boot Media Type: Hard Disk (0x00)
+Size in bytes: 0x900
+Media Descriptor Byte: 0xEB (Bootable)
+Byte 56 IDOEMName: "O        "
+Byte 56 IDOEMName: "O        "

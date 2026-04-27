@@ -1,23 +1,7 @@
 # Cinnamon Desktop Environment
 cinnamon
 cinnamon-desktop-environment
-cinnamon-session
-cinnamon-settings-daemon
-cinnamon-control-center
 nemo
 nemo-fileroller
-cinnamon-themes
-mint-y-theme
 lightdm
-muffin
-cinnamon-core
-
-# Cinnamon apps
-xapps
-pidgin
-hexchat
-xplayer
-xviewer
-xed
-xreader
-xapp
+lightdm-gtk-greeter

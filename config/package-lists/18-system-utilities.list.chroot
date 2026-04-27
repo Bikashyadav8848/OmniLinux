@@ -1,28 +1,17 @@
 # Complete System Utilities
+
 # Disk Management
 gparted
 gnome-disk-utility
-palimpsest
-disk-manager
 
 # System Monitoring
 gnome-system-monitor
-gnome-usage
-ksysguard
 htop
 atop
 iotop
 nmon
 dstat
 glances
-
-# Process Management
-htop
-iotop
-atop
-strace
-ltrace
-strace-minimal
 
 # System Info
 inxi
@@ -31,26 +20,15 @@ fastfetch
 sysstat
 dmidecode
 lshw
-lsblk
-lsscsi
-lspci
-lsusb
 
 # File System Tools
 ntfs-3g
 exfat-fuse
-extlinux
-fatattr
 
 # Archive Tools
-p7zip-rar
 p7zip-full
 unzip
 unrar-free
-rar
-unace
-unarc
-unarj
 lzip
 xz-utils
 
@@ -58,17 +36,12 @@ xz-utils
 wget
 curl
 axel
-uget
-jdowload
 
 # Password Tools
 pass
 pass-otp
 qrencode
-zrkbd
 
 # System Tweaks
 gnome-tweaks
-gnome-adjust
 dconf-editor
-gconf-editor

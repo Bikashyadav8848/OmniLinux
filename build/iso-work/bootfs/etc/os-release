@@ -1,0 +1,11 @@
+NAME="OmniLinux"
+VERSION="1.0-alpha"
+ID="omnilinux"
+PRETTY_NAME="OmniLinux 1.0-alpha (Genesis)"
+VERSION_ID="1.0-alpha"
+ANSI_COLOR="38;5;85"
+HOME_URL="https://omnilinux.org"
+DOCUMENTATION_URL="https://omnilinux.org/docs"
+SUPPORT_URL="https://github.com/omnilinux/omnilinux/issues"
+BUG_REPORT_URL="https://github.com/omnilinux/omnilinux/issues"
+LOGO=omnilinux

@@ -1,10 +1,8 @@
 # OmniLinux Live Boot Packages
-# Required for live boot functionality
 
 # Live boot helpers
 casper
 lupin-casper
-live-boot
 
 # Boot loaders
 grub-pc

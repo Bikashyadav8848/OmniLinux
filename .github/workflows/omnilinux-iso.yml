@@ -1,45 +1,29 @@
 name: OmniLinux ISO Build
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
-
 jobs:
-  iso:
-    runs-on: ubuntu-latest
-    
+  build-iso:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Debug info
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y live-build debootstrap squashfs-tools xorriso mtools dos2unix
+      - name: Prepare
         run: |
-          echo "Starting build..."
-          pwd
-          ls -la
-      
-      - name: Install tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso mtools dos2unix
-          
-      - name: Build ISO
-        run: |
-          # Convert line endings just in case
-          find . -type f -name "*.sh" -exec dos2unix {} +
-          dos2unix verify-build.sh build.sh auto/*
-          chmod +x build.sh verify-build.sh auto/*
-          
-          # Run verify script
-          ./verify-build.sh
-          
-          # Run build script
-          sudo ./build.sh amd64
-          
-      - name: Upload ISO Artifact
+          dos2unix build.sh verify-build.sh
+          find config -type f -exec dos2unix {} + 2>/dev/null || true
+          chmod +x build.sh verify-build.sh
+      - name: Verify
+        run: bash verify-build.sh
+      - name: Build
+        run: sudo bash ./build.sh amd64
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: OmniLinux-ISO-amd64
-          path: |
-            OmniLinux-*.iso
-            OmniLinux-*.iso.sha256
+          path: "OmniLinux-*.iso*"
           if-no-files-found: error

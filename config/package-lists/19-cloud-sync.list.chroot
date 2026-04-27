@@ -2,39 +2,16 @@
 
 # Nextcloud Client
 nextcloud-client
-nextcloud-client nautilus-extension
 
-# Dropbox (unofficial)
-nautilus-dropbox
-
-# Google Drive
-google-drive-ocamlfuse
-drive
+# Rclone for cloud storage
 rclone
-rclone-browser
 
 # Sync Tools
 syncthing
-syncthing-gtk
-freefilesync
 grsync
 
-# Cloud Storage Mount
-davfs2
- cadaver
-cadaver
-
-# OwnCloud
-owncloud-client
-owncloud-client-nautilus
-
 # WebDAV
-wget
-curl
-
-# iCloud
-libcurl4
-gnome-online-accounts
+davfs2
 
 # Network Drives
 cifs-utils
@@ -42,3 +19,6 @@ samba
 smbclient
 gvfs-backends
 gvfs-fuse
+
+# GNOME Online Accounts
+gnome-online-accounts

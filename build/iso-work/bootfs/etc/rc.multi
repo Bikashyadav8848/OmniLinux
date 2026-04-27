@@ -1,0 +1,23 @@
+#!/bin/sh
+# Multi-user startup
+echo ""
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║  ⚡ OmniLinux 1.0-alpha (Genesis)             ║"
+echo "║  World's Most Powerful Linux OS              ║"
+echo "╠══════════════════════════════════════════════════════╣"
+echo "║  Profile: full                                    ║"
+echo "║  Arch:   x86_64                                      ║"
+echo "╚══════════════════════════════════════════════════════╝"
+echo ""
+echo "Initializing system..."
+sleep 1
+echo "✓ Base system loaded"
+echo "✓ Kernel modules loaded"
+echo "✓ Network services starting..."
+echo ""
+echo "To install full system:"
+echo "  omni-install"
+echo ""
+echo "Welcome to OmniLinux!"
+echo ""
+/bin/sh

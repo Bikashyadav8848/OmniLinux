@@ -2,7 +2,6 @@ libreoffice-writer
 libreoffice-calc
 libreoffice-impress
 libreoffice-gnome
-libreoffice-qt5
 thunderbird
 vlc
 gimp
@@ -11,7 +10,6 @@ inkscape
 shotwell
 keepassxc
 audacity
-octopi
 gnome-screenshot
 file-roller
 galculator

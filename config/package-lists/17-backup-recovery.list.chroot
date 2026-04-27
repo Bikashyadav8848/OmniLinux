@@ -1,20 +1,10 @@
 # Backup and Recovery Tools
 timeshift
-timeshift-autosnap
 clonezilla
 partclone
-partimage
 ddrescue
 gdisk
 testdisk
 photorec
 foremost
-
-# System Recovery
-system-rescue
-system-rescue-grub
-rescue
-recovery
-
-# Timeshift configuration
-# Timeshift is pre-configured in HOOKS for automatic snapshots
+gddrescue
