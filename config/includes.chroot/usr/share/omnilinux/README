@@ -1,0 +1,15 @@
+# OmniLinux Branding Assets
+
+This directory is copied into `/usr/share/omnilinux/` in the built ISO.
+
+## Contents
+
+- colors.conf - Color palette
+- version - Version string (1.0 LTS)
+
+## Adding Assets
+
+Before building, add:
+- logo.svg - Main logo
+- logo-small.svg - Panel icon
+- banner.png - Login banner

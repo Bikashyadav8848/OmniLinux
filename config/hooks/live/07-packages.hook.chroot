@@ -1,0 +1,31 @@
+#!/bin/sh
+set -e
+
+# 07-packages.hook.chroot
+# Install additional packages needed after base
+
+echo "I: Installing additional packages..."
+
+# Calamares installer
+apt-get install -y calamares 2>/dev/null || true
+
+# Additional fonts
+apt-get install -y fonts-noto fonts-ubuntu fonts-dejavu fonts-droid-fallback 2>/dev/null || true
+
+# Required utilities
+apt-get install -y x11-utils x11-apps x11-common x11-session-utils \
+    fonts-font-awesome fonts-lyx gdebi-core 2>/dev/null || true
+
+# Network tools
+apt-get install -y network-manager-gnome bluez 2>/dev/null || true
+
+# Accessibility
+apt-get install -y at-spi2-core orca onboard 2>/dev/null || true
+
+# Live boot helpers
+apt-get install -y casper lupin-casper live-boot 2>/dev/null || true
+
+# OEM drivers
+apt-get install -y ubuntu-drivers-common 2>/dev/null || true
+
+echo "I: Additional packages installation complete."

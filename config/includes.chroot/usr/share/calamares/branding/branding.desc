@@ -1,0 +1,62 @@
+---
+# OmniLinux Branding Configuration for Calamares
+
+# Product name and version
+productName: OmniLinux
+productUrl: https://omnilinux.org
+componentName: OmniLinux
+componentUrl: https://omnilinux.org
+
+# Copyright
+copyright: Copyright 2024 OmniLinux Project
+
+# Packager info
+packager:
+    name: OmniLinux Team
+    tool: OmniLinux Builder
+
+# Bootloader entry name
+bootLoaderEntryName: omnilinux
+
+# ASCII logo for CLI installer
+# ASCII art version of OmniLinux logo
+asciiLogo:
+    - "   _____ _      _____   _____           _ "
+    - "  / ____(_)    |  __ \\ / ____|         | |"
+    - " | (___  _  ___| |  | | (___   ___ _ __| |"
+    - "  \\___ \\| |/ _ \\ |  | |\\___ \\ / _ \\ '__| |"
+    - "  ____) | |  __/ |__| |____) |  __/ |  |_|"
+    - " |_____/|_|\\___|_____/|_____/ \\___|_|  (_)"
+
+# Window settings
+windowExpanding: true
+windowWidth: 800
+windowHeight: 600
+windowSideMargin: 0
+windowTopMargin: 0
+
+# Progress bar styling
+progressBar:
+    pixmapCorrect: ":/data/resources/images/bar-ok.svgz"
+    pixmapWarning: ":/data/resources/images/bar-warning.svgz"
+    pixmapError: ":/data/resources/images/bar-error.svgz"
+    pixmapCheck: ":/data/resources/images/check.svgz"
+
+# Colors
+colors:
+    bgColor: "#0D1117"
+    fgColor: "#F0F4FF"
+    headerColor: "#3D7EFF"
+    linkColor: "#3D7EFF"
+    positiveColor: "#10B981"
+    warningColor: "#F59E0B"
+    dangerColor: "#EF4444"
+
+# Strings
+strings:
+    doneLabel: "Ready to Install"
+    doneDescription: "Click <b>Install Now</b> to begin installing OmniLinux."
+
+# Slides
+slideshow: ":/data/instructionslides"
+slideshowAPI: 2

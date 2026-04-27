@@ -1,0 +1,40 @@
+#!/bin/sh
+set -e
+
+# 08-finalize.hook.chroot
+# Final cleanup and configuration
+
+echo "I: Running final cleanup..."
+
+# Clean apt cache
+apt-get clean 2>/dev/null || true
+apt-get autoclean 2>/dev/null || true
+apt-get autoremove -y 2>/dev/null || true
+
+# Remove cached files
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 2>/dev/null || true
+
+# Create machine-id for live boot
+if [ ! -f /etc/machine-id ]; then
+    echo "uninitialized" > /etc/machine-id
+fi
+
+# Set hostname
+echo "omnilinux" > /etc/hostname
+cat > /etc/hosts <<'EOF'
+127.0.0.1       localhost
+127.0.1.1       omnilinux
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+EOF
+
+# Disable some services for live boot
+systemctl disable bluetooth.service 2>/dev/null || true
+systemctl disable cups.service 2>/dev/null || true
+
+echo "I: Final cleanup complete."

@@ -1,0 +1,39 @@
+#!/bin/bash
+# OmniLinux Desktop Session Selector
+# Allows users to choose their preferred desktop environment
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+DESKTOP_CHOICE=$(whiptail --title "OmniLinux Desktop Selection" --menu \
+"Choose your preferred desktop environment:" 15 60 4 \
+"1" "GNOME (Default) - Modern, feature-rich" \
+"2" "KDE Plasma - Powerful, customizable" \
+"3" "XFCE - Lightweight, efficient" \
+"4" "Cinnamon - Traditional, familiar" \
+3>&1 1>&2 2>&3)
+
+case $DESKTOP_CHOICE in
+    1)
+        export XDG_CURRENT_DESKTOP=GNOME
+        exec gnome-session
+        ;;
+    2)
+        export XDG_CURRENT_DESKTOP=KDE
+        exec startplasma-x11 2>/dev/null || exec startplasma-wayland 2>/dev/null || exec plasma-desktop
+        ;;
+    3)
+        export XDG_CURRENT_DESKTOP=XFCE
+        exec startxfce4
+        ;;
+    4)
+        export XDG_CURRENT_DESKTOP=CINNAMON
+        exec cinnamon-session
+        ;;
+    *)
+        # Default to GNOME
+        exec gnome-session
+        ;;
+esac

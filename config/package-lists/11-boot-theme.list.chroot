@@ -1,0 +1,8 @@
+# OmniLinux Plymouth Boot Theme
+plymouth
+plymouth-label
+plymouth-theme-ubuntu-logo
+plymouth-theme-script
+
+# Plymouth configuration
+# This theme is set in config/hooks/live/06-branding.hook.chroot

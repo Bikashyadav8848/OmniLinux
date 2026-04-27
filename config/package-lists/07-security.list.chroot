@@ -1,0 +1,13 @@
+nmap
+wireshark-qt
+aircrack-ng
+john
+hydra
+sqlmap
+gobuster
+netcat-traditional
+net-tools
+tcpdump
+logrotate
+cron
+rsyslog

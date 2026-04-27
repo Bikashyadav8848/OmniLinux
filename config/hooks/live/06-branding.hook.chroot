@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+# 06-branding.hook.chroot
+# Link os-release to omnilinux-release
+
+echo "I: Setting up OS release info..."
+ln -sf /etc/omnilinux-release /etc/os-release
+ln -sf /etc/omnilinux-release /etc/lsb-release
+echo "I: OS release setup complete."

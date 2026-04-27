@@ -15,20 +15,20 @@ FAIL=0
 check_file() {
     if [ -f "$1" ]; then
         echo -e "${GREEN}[OK]${NC} $1 exists"
-        ((PASS++))
+        PASS=$((PASS+1))
     else
         echo -e "${RED}[MISSING]${NC} $1 is missing!"
-        ((FAIL++))
+        FAIL=$((FAIL+1))
     fi
 }
 
 check_dir() {
     if [ -d "$1" ]; then
         echo -e "${GREEN}[OK]${NC} $1 exists"
-        ((PASS++))
+        PASS=$((PASS+1))
     else
         echo -e "${RED}[MISSING]${NC} $1 is missing!"
-        ((FAIL++))
+        FAIL=$((FAIL+1))
     fi
 }
 
@@ -49,7 +49,7 @@ check_dir "config/package-lists"
 for list in config/package-lists/*.list.chroot; do
     if [ -f "$list" ]; then
         echo -e "${GREEN}[OK]${NC} $list ($(wc -l < "$list") packages)"
-        ((PASS++))
+        PASS=$((PASS+1))
     fi
 done
 
@@ -59,7 +59,7 @@ check_dir "config/hooks/live"
 for hook in config/hooks/live/*.hook.chroot; do
     if [ -f "$hook" ]; then
         echo -e "${GREEN}[OK]${NC} $(basename $hook)"
-        ((PASS++))
+        PASS=$((PASS+1))
     fi
 done
 
@@ -84,7 +84,7 @@ check_dir "scripts"
 for script in scripts/*.sh; do
     if [ -f "$script" ]; then
         echo -e "${GREEN}[OK]${NC} $(basename $script)"
-        ((PASS++))
+        PASS=$((PASS+1))
     fi
 done
 

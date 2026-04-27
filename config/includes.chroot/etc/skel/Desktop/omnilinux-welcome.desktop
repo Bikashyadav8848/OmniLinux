@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome to OmniLinux
+Comment=First-time setup wizard
+Exec=sh -c "sudo /usr/local/bin/post-install.sh"
+Icon=system-omnilinux
+Terminal=true
+Categories=System;
+StartupNotify=false

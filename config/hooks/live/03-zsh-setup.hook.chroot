@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+# 03-zsh-setup.hook.chroot
+# Setup ZSH as default shell
+
+echo "I: Setting up ZSH as default shell..."
+
+# Download template to /etc/skel
+mkdir -p /etc/skel
+wget -qO /etc/skel/.zshrc https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/templates/zshrc.zsh-template || true
+
+
+# Customize theme
+sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/g' /etc/skel/.zshrc 2>/dev/null || true
+
+# Make zsh default for new users
+sed -i 's|DSHELL=/bin/bash|DSHELL=/bin/zsh|g' /etc/default/useradd 2>/dev/null || true
+
+echo "I: ZSH configuration complete."

@@ -1,0 +1,15 @@
+DISTRIB_ID=OmniLinux
+DISTRIB_RELEASE=1.0
+DISTRIB_CODENAME=genesis
+DISTRIB_DESCRIPTION="OmniLinux 1.0 Genesis"
+NAME="OmniLinux"
+VERSION="1.0 (Genesis)"
+ID=omnilinux
+ID_LIKE=ubuntu debian
+VERSION_ID="1.0"
+HOME_URL="https://omnilinux.org"
+SUPPORT_URL="https://omnilinux.org/support"
+BUG_REPORT_URL="https://github.com/omnilinux/omnilinux/issues"
+PRIVACY_POLICY_URL="https://omnilinux.org/privacy"
+VERSION_CODENAME=genesis
+UBUNTU_CODENAME=noble

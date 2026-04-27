@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+# 00-keyboard.hook.chroot
+# Configure keyboard layout
+
+echo "I: Configuring keyboard layout (US)..."
+
+# Set keyboard configuration
+cat > /etc/default/keyboard <<'EOF'
+# KEYBOARD CONFIGURATION FILE
+# Consult the keyboard(5) manual page.
+XKBMODEL="pc105"
+XKBLAYOUT="us"
+XKBVARIANT=""
+XKBOPTIONS=""
+
+BACKSPACE="guess"
+EOF
+
+# Apply keyboard settings
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure -f noninteractive keyboard-configuration 2>/dev/null || true
+
+echo "I: Keyboard configuration complete."

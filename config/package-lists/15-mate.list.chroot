@@ -1,0 +1,18 @@
+# MATE Desktop Environment
+mate-desktop-environment
+mate-desktop-environment-core
+mate-desktop-environment-extra
+mate-control-center
+mate-panel
+mate-terminal
+mate-file-manager
+mate-utils
+mate-applets
+mate-icon-theme
+mate-themes
+lightdm
+atril
+caja
+pluma
+eom
+mozo

@@ -7,8 +7,9 @@
 
 # live-build cache
 cache/
-*.bootstrap
-*.chroot
+chroot/
+binary/
+bootstrap/
 
 # System
 *.log

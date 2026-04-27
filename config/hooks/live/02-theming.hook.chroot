@@ -1,0 +1,40 @@
+#!/bin/sh
+set -e
+
+# 02-theming.hook.chroot
+# Apply OmniLinux themes
+
+echo "I: Applying default theme configurations..."
+
+# Setup dconf profile for GNOME
+mkdir -p /etc/dconf/profile
+cat > /etc/dconf/profile/user <<'EOF'
+user-db:user
+system-db:local
+system-db:omnilinux
+EOF
+
+mkdir -p /etc/dconf/db/local.d
+cat > /etc/dconf/db/local.d/00-omni-theme <<'EOF'
+[org/gnome/desktop/interface]
+gtk-theme='Yaru-dark'
+icon-theme='Yaru'
+cursor-theme='Yaru'
+color-scheme='prefer-dark'
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/gnome/adwaita-d.jxl'
+picture-options='zoom'
+
+[org/gnome/shell]
+enabled-extensions=['ubuntu-dock@ubuntu.com']
+EOF
+
+dconf update 2>/dev/null || true
+
+# Set default display manager for GNOME sessions
+echo "I: Configuring GDM3 as default display manager..."
+echo "gdm3" > /etc/X11/default-display-manager 2>/dev/null || true
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure gdm3 2>/dev/null || true
+
+echo "I: Theming complete."

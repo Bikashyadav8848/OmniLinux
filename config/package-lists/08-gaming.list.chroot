@@ -1,0 +1,16 @@
+# Gaming - Base packages available in Ubuntu repos
+# Steam requires multiverse/ppa, lutris requires wine ppa
+# Games and advanced gaming tools are better installed post-install
+
+gamemode
+libgamemode0
+libgamemode-dev
+obs-studio
+libobs0
+vulkan-tools
+libvulkan1
+mesa-vulkan-drivers
+vulkan-validationlayers
+glxinfo
+mesa-utils
+vainfo

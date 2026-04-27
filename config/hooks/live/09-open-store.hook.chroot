@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+
+# 09-open-store.hook.chroot
+# Install OmniLinux Open Store
+
+echo "I: Installing OmniLinux Open Store..."
+
+# Copy the omni-store script
+mkdir -p /usr/local/bin
+if [ -f /tmp/scripts/omni-store ]; then
+    cp /tmp/scripts/omni-store /usr/local/bin/omni-store
+    chmod +x /usr/local/bin/omni-store
+fi
+
+# Create desktop shortcut
+mkdir -p /usr/share/applications
+cat > /usr/share/applications/omni-store.desktop <<'EOF'
+[Desktop Entry]
+Name=OmniLinux Store
+Comment=Browse and install open source applications
+Exec=omni-store
+Icon=system-software-install
+Terminal=true
+Type=Application
+Categories=System;SoftwareManagement;
+Keywords=store;install;software;app;package;apt;flatpak;
+EOF
+
+chmod +x /usr/share/applications/omni-store.desktop
+
+echo "I: OmniLinux Open Store installed."

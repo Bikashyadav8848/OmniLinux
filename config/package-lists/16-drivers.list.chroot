@@ -1,0 +1,69 @@
+# Hardware Drivers and Firmware
+# GPU Drivers
+
+# AMD Drivers (open source)
+mesa-vulkan-drivers
+mesa-vulkan-software
+xserver-xorg-video-amdgpu
+xserver-xorg-video-ati
+
+# NVIDIA Drivers (proprietary)
+nvidia-driver-535
+nvidia-driver-535-server
+nvidia-dkms-535
+xserver-xorg-video-nvidia-535
+nvidia-settings
+nvidia-primus
+
+# Intel GPU
+mesa-vulkan-intel
+intel-media-va-driver
+xserver-xorg-video-intel
+
+# OpenGL
+libgl1-mesa-glx
+libgl1-mesa-dri
+libglx-mesa0
+mesa-utils
+
+# Vulkan
+vulkan-tools
+vulkan-validationlayers
+libvulkan1
+spirv-tools
+
+# Hardware Support
+thermald
+tlp
+tlp-rdw
+amd64-microcode
+intel-microcode
+firmware-adi
+firmware-amd-graphics
+firmware-ath9k
+firmware-ath10k
+firmware-atheros
+firmware-bnx2
+firmware-bnx2x
+firmware-brcm80211
+firmware-cavium
+firmware-intel-sound
+firmware-intel-sys
+firmware-ipw2x00
+firmware-ivtv
+firmware-libertas
+firmware-myricom
+firmware-netxen
+firmware-qlogic
+firmware-realtek
+firmware-samsung
+firmware-siano
+firmware-ti-connectivity
+firmware-zd1211
+
+# Laptop/Tablet support
+touchpad-indicator
+tlp
+upower
+acpi
+acpi-support

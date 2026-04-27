@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+# 00-locale.hook.chroot
+# Set up locale and keyboard configuration
+
+echo "I: Configuring locale (en_US.UTF-8)..."
+
+# Set locale
+sed -i 's/# en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen 2>/dev/null || true
+sed -i 's/en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen 2>/dev/null || true
+
+# Generate locale
+locale-gen en_US.UTF-8 2>/dev/null || true
+
+# Set default locale environment
+cat > /etc/default/locale <<'EOF'
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+EOF
+
+echo "I: Locale configuration complete."

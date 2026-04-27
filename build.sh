@@ -43,8 +43,8 @@ apt-get install -y --no-install-recommends \
 log_info "Cleaning previous build..."
 lb clean --all 2>/dev/null || true
 rm -f OmniLinux-*.iso 2>/dev/null || true
-rm -rfauto 2>/dev/null || true
-rm -rfchroot 2>/dev/null || true
+rm -rf auto 2>/dev/null || true
+rm -rf chroot 2>/dev/null || true
 
 log_info "Configuring for $ARCH..."
 
@@ -54,7 +54,7 @@ cat > auto/config <<'CONFIGEOF'
 #!/bin/bash
 lb config noauto \
     --architectures amd64 \
-    --mode debian \
+    --mode ubuntu \
     --distribution noble \
     --mirror-bootstrap "http://archive.ubuntu.com/ubuntu/" \
     --mirror-binary "http://archive.ubuntu.com/ubuntu/" \

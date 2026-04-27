@@ -19,5 +19,27 @@ jobs:
       
       - name: Install tools
         run: |
-          apt-get update
-          apt-get install -y live-build
+          sudo apt-get update
+          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso mtools dos2unix
+          
+      - name: Build ISO
+        run: |
+          # Convert line endings just in case
+          find . -type f -name "*.sh" -exec dos2unix {} +
+          dos2unix verify-build.sh build.sh auto/*
+          chmod +x build.sh verify-build.sh auto/*
+          
+          # Run verify script
+          ./verify-build.sh
+          
+          # Run build script
+          sudo ./build.sh amd64
+          
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OmniLinux-ISO-amd64
+          path: |
+            OmniLinux-*.iso
+            OmniLinux-*.iso.sha256
+          if-no-files-found: error

@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+# 01-system-config.hook.chroot
+# Enable AppArmor and UFW
+
+echo "I: Configuring UFW (Default Deny)..."
+ufw default deny incoming || true
+ufw default allow outgoing || true
+
+echo "I: Setting timezone to UTC by default..."
+ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime || true
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure -f noninteractive tzdata 2>/dev/null || true
+
+echo "I: Adding Multiarch support..."
+dpkg --add-architecture i386 2>/dev/null || true
+apt-get update 2>/dev/null || true
+
+echo "I: System configuration complete."

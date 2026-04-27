@@ -1,0 +1,36 @@
+#!/bin/sh
+set -e
+
+# 05-performance.hook.chroot
+# System tuning based on Zen kernel philosophies
+
+echo "I: Applying performance optimizations..."
+
+# TCP BBR and performance sysctls
+mkdir -p /etc/sysctl.d
+cat > /etc/sysctl.d/99-omnilinux-perf.conf <<'EOF'
+# TCP BBR Congestion Control
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+
+# Virtual Memory / Swappiness
+vm.swappiness=10
+vm.vfs_cache_pressure=50
+
+# Inotify for dev
+fs.inotify.max_user_watches=524288
+
+# Map count for Wine/Proton
+vm.max_map_count=1048576
+
+# Network performance
+net.ipv4.tcp_window_scaling=1
+net.ipv4.tcp_sack=1
+net.core.rmem_max=16777216
+net.core.wmem_max=16777216
+EOF
+
+# Enable fstrim timer for SSDs
+systemctl enable fstrim.timer 2>/dev/null || true
+
+echo "I: Performance optimizations complete."

@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+# 00-policy-rc.hook.chroot
+# Disable daemon autostart during chroot phase to prevent build hangs
+
+echo "I: Disabling service autostart in chroot..."
+echo "exit 101" > /usr/sbin/policy-rc.d
+chmod +x /usr/sbin/policy-rc.d
+echo "I: policy-rc.d setup complete."

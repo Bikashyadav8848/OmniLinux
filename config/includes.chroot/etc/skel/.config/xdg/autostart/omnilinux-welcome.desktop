@@ -1,0 +1,9 @@
+# Desktop files for OmniLinux session selection
+
+[Desktop Entry]
+Name=OmniLinux
+Comment=OmniLinux - Modern Linux for Everyone
+Exec=sh -c "echo 'Welcome to OmniLinux'; sleep 3"
+Icon=computer
+Type=Application
+StartupNotify=true
