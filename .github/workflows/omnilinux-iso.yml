@@ -1,25 +1,50 @@
-name: omnilinux-iso
-on: push
-permissions:
-  contents: read
-  actions: read
-  contents: write
+name: OmniLinux ISO Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [omnilinux-build]
+
 jobs:
-  build:
+  iso:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+
     steps:
       - uses: actions/checkout@v4
-      - name: Install
+
+      - name: Install Deps
         run: |
+          export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
-          sudo apt-get install -y live-build squashfs-tools xorriso
-      - name: Build
+          sudo apt-get install -y --no-install-recommends live-build
+
+      - name: Cleanup
         run: |
-          mkdir -p auto
-          echo lb build noauto > auto/build
-          sudo lb build
+          sudo rm -rf auto chroot .stage live-image-*.iso
+
+      - name: Setup Config
+        run: |
+          sudo mkdir -p auto
+          cat > auto/config <<'CONF'
+#!/bin/bash
+lb config noauto --mode ubuntu --distribution jammy --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ --mirror-binary http://archive.ubuntu.com/ubuntu/ --binary-images iso --system live --source false
+CONF
+          sudo chmod +x auto/config
+
+      - name: Bootstrap
+        run: sudo lb bootstrap
+        timeout-minutes: 10
+
+      - name: Build
+        run: sudo lb build
+        timeout-minutes: 10
+
       - name: Upload
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: OmniLinux-ISO
-          path: "*.iso"
+          name: OmniLinux-minimal
+          path: live-image-*.iso
+          if-no-files-found: ignore
