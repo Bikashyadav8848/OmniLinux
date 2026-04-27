@@ -1,7 +1,7 @@
-name: test
+name: iso
 on: push
 jobs:
-  run:
+  x:
     runs-on: ubuntu-latest
     steps:
-      - run: echo OK
+      - run: echo ok
